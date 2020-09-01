@@ -1,4 +1,4 @@
-from functools import cached_property
+
 from typing import List
 
  #do this as mapnik expects to coordinates in epsg 3857 form some weird reason
