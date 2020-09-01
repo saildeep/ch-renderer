@@ -1,8 +1,8 @@
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
-from pyproj import transform,Proj, Transformer
-
+from pyproj import Proj, Transformer
+from chparser import parse_file
 
 map = ET.Element('Map',{"background-color":"transparent","srs":"+proj=longlat+datum=WGS84"})
 
@@ -49,6 +49,8 @@ with open('mapnik.xml','w') as f:
     s = generate_stylexml()
     f.write(s)
 
+
+ch = parse_file('./ch.txt')
 
  #do this as mapnik expects to coordinates in epsg 3857 form some weird reason
 wgs84 = Proj('epsg:4326')
