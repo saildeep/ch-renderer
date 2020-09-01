@@ -73,7 +73,7 @@ print("Finished parsing CH")
 
 data =list( map(lambda x:[], list(range(num_zoom_levels))))
 for e in ch.edges:
-    zoomlevel = 15-e.level
+    zoomlevel = (num_zoom_levels-1)-e.level
     if zoomlevel < 0:
         continue
 
