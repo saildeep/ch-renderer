@@ -26,6 +26,7 @@ class Edge(object):
         self.cost = cost
         self.skip1 = skip1
         self.skip2 = skip2
+        self.replaced_by = -1
         self.level = -1
 
 
@@ -54,6 +55,8 @@ class CH:
                 s1 = self.edges[e.skip1]
                 s2 = self.edges[e.skip2]
                 if s1.level >= 0 and s2.level >=0:
+                    s1.replaced_by = ie
+                    s2.replaced_by = ie
                     e.level = max(s1.level,s2.level)+1
                     self.max_level = max(e.level,self.max_level)
                     continue

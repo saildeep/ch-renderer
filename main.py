@@ -37,7 +37,8 @@ def generate_stylexml(zoomlevel_list):
         rule.append(line_sym)
 
         rule.append(max_scale)
-        rule.append(min_scale)
+        if zoom_level < num_zoom_levels -1:
+            rule.append(min_scale)
 
         style.append(rule)
         main_map.append(style)
