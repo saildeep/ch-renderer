@@ -15,7 +15,7 @@ class Vertex:
         self.lat = lat
         self.lng = lng
 
-    @cached_property
+    @property
     def mapnik_coordinate(self):
         return tranformer.transform(self.lat,self.lng)
 
