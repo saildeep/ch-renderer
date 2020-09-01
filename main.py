@@ -11,24 +11,21 @@ def generate_stylexml(zoomlevel_list):
     main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat +datum=WGS84"})
     for zoom_level in zoomlevel_list:
         scale = int(559082264 / 2**zoom_level)
-        min_v = 0
+
         max_v = scale
 
         line_sym = ET.Element("LineSymbolizer",{"stroke":"green","stroke-width":"4"})
-        """
-        min_scale = ET.Element("MinScaleDenominator")
+
         max_scale = ET.Element("MaxScaleDenominator")
-        min_scale.text = str(min_v)
         max_scale.text = str(max_v)
-        """
+
 
         style = ET.Element("Style",{"name":"style-{}".format(zoom_level)})
         rule = ET.Element("Rule")
         rule.append(line_sym)
-        """
-          rule.append(min_scale)
+
         rule.append(max_scale)
-        """
+
         style.append(rule)
         main_map.append(style)
 
@@ -61,10 +58,11 @@ ch = parse_file('./ch-bremen.ftxt')
 
 data =list( map(lambda x:[], list(range(num_zoom_levels))))
 for e in ch.edges:
-    if e.skip1 == -1 and e.skip2 == -1:
-        from_coord = ch.get_vertex(e.src_id).mapnik_coordinate
-        to_coord = ch.get_vertex(e.target_id).mapnik_coordinate
-        data[0].append([from_coord,to_coord])
+    zoomlevel = max(15-e.level,1)
+
+    from_coord = ch.get_vertex(e.src_id).mapnik_coordinate
+    to_coord = ch.get_vertex(e.target_id).mapnik_coordinate
+    data[zoomlevel].append([from_coord,to_coord])
 
 used_zoom_levels = []
 for i in range(num_zoom_levels):

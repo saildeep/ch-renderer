@@ -29,6 +29,8 @@ class Edge(object):
         self.cost = cost
         self.skip1 = skip1
         self.skip2 = skip2
+        self.level = -1
+
 
     def __str__(self):
         return "Edge {0}:{1}->{2}@{3}$, skipping {4},{5} ".format(self.id,self.src_id,self.target_id,self.cost,self.skip1,self.skip2)
@@ -38,6 +40,27 @@ class CH:
     def __init__(self, vertices: List[Vertex], edges: List[Edge]):
         self.vertices = vertices
         self.edges = edges
+        self.__compute_edge_levels()
+
+    def __compute_edge_levels(self):
+
+        open_list = list(range(len(self.edges)))
+        new_open_list = []
+        while len(open_list) > 0:
+            for ie in open_list:
+                e = self.edges[ie]
+                if e.skip1 == -1 and e.skip2 == -1:
+                    e.level = 0
+                    continue
+                s1 = self.edges[e.skip1]
+                s2 = self.edges[e.skip2]
+                if s1.level >= 0 and s2.level >=0:
+                    e.level = max(s1.level,s2.level)+1
+                    continue
+                new_open_list.append(ie)
+            open_list = new_open_list
+
+
 
     def get_vertex(self,id):
         return self.vertices[id]
