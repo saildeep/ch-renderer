@@ -2,3 +2,4 @@
 mapnik.xml
 ch.txt
 *.geojson
+__pycache__/
