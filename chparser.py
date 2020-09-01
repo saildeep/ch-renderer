@@ -1,5 +1,12 @@
+from functools import cached_property
 from typing import List
 
+ #do this as mapnik expects to coordinates in epsg 3857 form some weird reason
+from pyproj import Proj, Transformer
+
+wgs84 = Proj('epsg:4326')
+mapnik_proj = Proj("epsg:3857")
+tranformer = Transformer.from_proj(wgs84,mapnik_proj)
 
 class Vertex:
     def __init__(self, id, label, lat, lng):
@@ -7,6 +14,11 @@ class Vertex:
         self.label = label
         self.lat = lat
         self.lng = lng
+
+    @cached_property
+    def mapnik_coordinate(self):
+        return tranformer.transform(self.lat,self.lng)
+
 
 
 class Edge(object):
@@ -18,11 +30,17 @@ class Edge(object):
         self.skip1 = skip1
         self.skip2 = skip2
 
+    def __str__(self):
+        return "Edge {0}:{1}->{2}@{3}$, skipping {4},{5} ".format(self.id,self.src_id,self.target_id,self.cost,self.skip1,self.skip2)
+
 
 class CH:
     def __init__(self, vertices: List[Vertex], edges: List[Edge]):
         self.vertices = vertices
         self.edges = edges
+
+    def get_vertex(self,id):
+        return self.vertices[id]
 
 
 def parse_file(filepath):

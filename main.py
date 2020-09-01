@@ -1,13 +1,15 @@
+import json
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
-from pyproj import Proj, Transformer
 from chparser import parse_file
 
-map = ET.Element('Map',{"background-color":"transparent","srs":"+proj=longlat+datum=WGS84"})
+
+num_zoom_levels = 20
 
 def generate_stylexml():
-    for zoom_level in range(21):
+    main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat+datum=WGS84"})
+    for zoom_level in range(num_zoom_levels):
         scale = int(559082264 / 2**zoom_level)
         min_v = 0
         max_v = scale
@@ -22,7 +24,7 @@ def generate_stylexml():
         style.append(line_sym)
         style.append(min_scale)
         style.append(max_scale)
-        map.append(style)
+        main_map.append(style)
 
 
         layer = ET.Element("Layer",{"name":"layer-{}".format(zoom_level)})
@@ -40,9 +42,9 @@ def generate_stylexml():
 
         layer.append(style_name)
         layer.append(ds)
-        map.append(layer)
+        main_map.append(layer)
 
-    return minidom.parseString(ET.tostring(map)).toprettyxml(indent="    ")
+    return minidom.parseString(ET.tostring(main_map)).toprettyxml(indent="    ")
 
 
 with open('mapnik.xml','w') as f:
@@ -50,9 +52,34 @@ with open('mapnik.xml','w') as f:
     f.write(s)
 
 
-ch = parse_file('./ch.txt')
+ch = parse_file('./ch-bremen.ftxt')
 
- #do this as mapnik expects to coordinates in epsg 3857 form some weird reason
-wgs84 = Proj('epsg:4326')
-mapnik_proj = Proj("epsg:3857")
-Transformer.from_proj(wgs84,mapnik_proj)
+data =list( map(lambda x:[], list(range(num_zoom_levels))))
+for e in ch.edges:
+    if e.skip1 == -1 and e.skip2 == -1:
+        from_coord = ch.get_vertex(e.src_id).mapnik_coordinate
+        to_coord = ch.get_vertex(e.target_id).mapnik_coordinate
+        data[0].append([from_coord,to_coord])
+
+for i in range(num_zoom_levels):
+    out_data = {
+            "type":"FeatureCollection",
+            "features":[
+                {
+                    "type":"Feature",
+
+                    "geometry":{
+                        "type":"MultiLineString",
+                        "coordinates":data[i]
+                    },
+                    "properties":{},
+
+                 }
+            ]
+        }
+    with open("{0}.geojson".format(i),'w') as f:
+        json.dump(out_data,f,check_circular=False)
+        f.flush()
+pass
+
+
