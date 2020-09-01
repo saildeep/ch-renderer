@@ -13,7 +13,7 @@ def generate_stylexml(zoomlevel_list):
 
 
     for zoom_level in zoomlevel_list:
-        scale = int(559082264 / 2**zoom_level)
+        scale = 10**4 * int(559082264 / 2**zoom_level)
 
         max_v = scale
 
@@ -23,7 +23,7 @@ def generate_stylexml(zoomlevel_list):
 
         line_sym = ET.Element("LineSymbolizer",{"stroke":color,"stroke-width":"4"})
 
-        max_scale = ET.Element("MinScaleDenominator")
+        max_scale = ET.Element("MaxScaleDenominator")
         max_scale.text = str(max_v)
 
 
