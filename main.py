@@ -68,18 +68,18 @@ for i in range(num_zoom_levels):
         used_zoom_levels.append(i)
         out_data = {
                 "type":"FeatureCollection",
-                "features":[
+                "features":list(map(lambda x:
                     {
                         "type":"Feature",
 
                         "geometry":{
-                            "type":"MultiLineString",
-                            "coordinates":data[i]
+                            "type":"LineString",
+                            "coordinates":x
                         }
 
 
                      }
-                ]
+                ,data[i]))
             }
         with open("{0}.geojson".format(i),'w') as f:
             json.dump(out_data,f,check_circular=False)
