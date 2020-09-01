@@ -44,7 +44,8 @@ def generate_stylexml(zoomlevel_list):
         layer.append(ds)
         main_map.append(layer)
 
-    return minidom.parseString(ET.tostring(main_map)).toprettyxml(indent="    ")
+    flat_xml = ET.tostring(main_map,encoding="unicode")
+    return flat_xml
 
 
 
