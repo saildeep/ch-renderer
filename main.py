@@ -13,7 +13,7 @@ def generate_stylexml(zoomlevel_list):
 
 
     for zoom_level in zoomlevel_list:
-        scale = 10**4 * int(559082264 / 2**zoom_level)
+        scale =( 20026376.39 / 180.0) * float(559082264 / 2**zoom_level)
 
         max_v = scale
 
