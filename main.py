@@ -7,9 +7,9 @@ from chparser import parse_file
 
 num_zoom_levels = 20
 
-def generate_stylexml():
+def generate_stylexml(zoomlevel_list):
     main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat+datum=WGS84"})
-    for zoom_level in range(num_zoom_levels):
+    for zoom_level in zoomlevel_list:
         scale = int(559082264 / 2**zoom_level)
         min_v = 0
         max_v = scale
@@ -47,9 +47,7 @@ def generate_stylexml():
     return minidom.parseString(ET.tostring(main_map)).toprettyxml(indent="    ")
 
 
-with open('mapnik.xml','w') as f:
-    s = generate_stylexml()
-    f.write(s)
+
 
 
 ch = parse_file('./ch-bremen.ftxt')
@@ -61,25 +59,32 @@ for e in ch.edges:
         to_coord = ch.get_vertex(e.target_id).mapnik_coordinate
         data[0].append([from_coord,to_coord])
 
+used_zoom_levels = []
 for i in range(num_zoom_levels):
-    out_data = {
-            "type":"FeatureCollection",
-            "features":[
-                {
-                    "type":"Feature",
+    if len(data[i]) > 0:
+        used_zoom_levels.append(i)
+        out_data = {
+                "type":"FeatureCollection",
+                "features":[
+                    {
+                        "type":"Feature",
 
-                    "geometry":{
-                        "type":"MultiLineString",
-                        "coordinates":data[i]
-                    },
-                    "properties":{},
+                        "geometry":{
+                            "type":"MultiLineString",
+                            "coordinates":data[i]
+                        },
+                        "properties":{},
 
-                 }
-            ]
-        }
-    with open("{0}.geojson".format(i),'w') as f:
-        json.dump(out_data,f,check_circular=False)
-        f.flush()
+                     }
+                ]
+            }
+        with open("{0}.geojson".format(i),'w') as f:
+            json.dump(out_data,f,check_circular=False)
+            f.flush()
+
+with open('mapnik.xml','w') as f:
+    s = generate_stylexml(used_zoom_levels)
+    f.write(s)
 pass
 
 
