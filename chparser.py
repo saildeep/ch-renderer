@@ -14,10 +14,7 @@ class Vertex:
         self.label = label
         self.lat = lat
         self.lng = lng
-
-    @property
-    def mapnik_coordinate(self):
-        return tranformer.transform(self.lat,self.lng)
+        self.mapnik_coordinate = tranformer.transform(self.lat,self.lng)
 
 
 
@@ -45,7 +42,7 @@ class CH:
 
 
     def __compute_edge_levels(self):
-
+        print("Computing edge levels")
         open_list = list(range(len(self.edges)))
         new_open_list = []
         while len(open_list) > 0:
@@ -75,15 +72,17 @@ def parse_file(filepath):
         num_edges = int(file.readline(100000))
 
         vertices = []
+        print("Starting parsing {0} vertices and {1} edges".format(num_vertices,num_edges))
         for i in range(num_vertices):
-            vvertex = file.readline(10000)
+            vvertex = file.readline(400)
             parsed_vertex = vvertex.split(" ")
             vertex = Vertex(i, int(parsed_vertex[0]), float(parsed_vertex[1]), float(parsed_vertex[2]))
 
             vertices.append(vertex)
         edges = []
+        print("Parsed vertices")
         for i in range(num_edges):
-            vedge = file.readline(100000)
+            vedge = file.readline(400)
             parsed_edge = vedge.split(" ")
             assert i == int(parsed_edge[0])
             edge = Edge(
@@ -95,5 +94,5 @@ def parse_file(filepath):
                 int(parsed_edge[5])
             )
             edges.append(edge)
-
+        print("Parsed edges")
         return CH(vertices, edges)

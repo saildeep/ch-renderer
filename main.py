@@ -67,7 +67,8 @@ def generate_stylexml(zoomlevel_list):
 
 
 
-ch = parse_file('./ch-bremen.ftxt')
+ch = parse_file('./ch-bw.ftxt')
+print("Finished parsing CH")
 
 data =list( map(lambda x:[], list(range(num_zoom_levels))))
 for e in ch.edges:
@@ -78,6 +79,7 @@ for e in ch.edges:
     from_coord = ch.get_vertex(e.src_id).mapnik_coordinate
     to_coord = ch.get_vertex(e.target_id).mapnik_coordinate
     data[zoomlevel].append([from_coord,to_coord])
+print("Finished categorizing vertices")
 
 used_zoom_levels = []
 for i in range(num_zoom_levels):
@@ -98,7 +100,9 @@ for i in range(num_zoom_levels):
                      }
                 ,data[i]))
             }
-        with open("{0}.geojson".format(i),'w') as f:
+        fn = "{0}.geojson".format(i)
+        with open(fn,'w') as f:
+            print("Writing {}".format(fn))
             json.dump(out_data,f,check_circular=False)
             f.flush()
 
