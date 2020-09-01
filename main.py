@@ -21,9 +21,11 @@ def generate_stylexml(zoomlevel_list):
         max_scale.text = str(max_v)
 
         style = ET.Element("Style",{"name":"style-{}".format(zoom_level)})
-        style.append(line_sym)
-        style.append(min_scale)
-        style.append(max_scale)
+        rule = ET.Element("Rule")
+        rule.append(line_sym)
+        rule.append(min_scale)
+        rule.append(max_scale)
+        style.append(rule)
         main_map.append(style)
 
 
