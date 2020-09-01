@@ -72,8 +72,8 @@ for i in range(num_zoom_levels):
                         "geometry":{
                             "type":"MultiLineString",
                             "coordinates":data[i]
-                        },
-                        "properties":{},
+                        }
+
 
                      }
                 ]
