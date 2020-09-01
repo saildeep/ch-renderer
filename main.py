@@ -9,12 +9,19 @@ num_zoom_levels = 20
 
 def generate_stylexml(zoomlevel_list):
     main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat +datum=WGS84"})
+
+
+
     for zoom_level in zoomlevel_list:
         scale = int(559082264 / 2**zoom_level)
 
         max_v = scale
 
-        line_sym = ET.Element("LineSymbolizer",{"stroke":"green","stroke-width":"4"})
+        ratio = float(zoom_level) / float(num_zoom_levels)
+        color = "rgb({0:d},{1:d},{2:d})".format(
+            int(ratio * 255.0),int(127+120.0*ratio),int(255.0*(1.0-ratio)))
+
+        line_sym = ET.Element("LineSymbolizer",{"stroke":color,"stroke-width":"4"})
 
         max_scale = ET.Element("MinScaleDenominator")
         max_scale.text = str(max_v)
@@ -48,7 +55,7 @@ def generate_stylexml(zoomlevel_list):
         main_map.append(layer)
 
     flat_xml = ET.tostring(main_map,encoding="unicode")
-    return flat_xml
+    return minidom.parseString(flat_xml).toprettyxml("    ")
 
 
 
@@ -58,7 +65,9 @@ ch = parse_file('./ch-bremen.ftxt')
 
 data =list( map(lambda x:[], list(range(num_zoom_levels))))
 for e in ch.edges:
-    zoomlevel = max(15-e.level,1)
+    zoomlevel = 15-e.level
+    if zoomlevel < 0:
+        continue
 
     from_coord = ch.get_vertex(e.src_id).mapnik_coordinate
     to_coord = ch.get_vertex(e.target_id).mapnik_coordinate

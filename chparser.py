@@ -40,7 +40,9 @@ class CH:
     def __init__(self, vertices: List[Vertex], edges: List[Edge]):
         self.vertices = vertices
         self.edges = edges
+        self.max_level = 0
         self.__compute_edge_levels()
+
 
     def __compute_edge_levels(self):
 
@@ -56,6 +58,7 @@ class CH:
                 s2 = self.edges[e.skip2]
                 if s1.level >= 0 and s2.level >=0:
                     e.level = max(s1.level,s2.level)+1
+                    self.max_level = max(e.level,self.max_level)
                     continue
                 new_open_list.append(ie)
             open_list = new_open_list
