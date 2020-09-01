@@ -13,9 +13,11 @@ def generate_stylexml(zoomlevel_list):
 
 
     for zoom_level in zoomlevel_list:
-        scale =( 20026376.39 / 180.0) * float(559082264 / 2**zoom_level)
+        osm_factor = ( 20026376.39 / 180.0) # due to strange coordinate system
 
+        scale = osm_factor * float(559082264 / 2**zoom_level)
         max_v = scale
+        min_v = scale / 4
 
         ratio = float(zoom_level) / float(num_zoom_levels)
         color = "rgb({0:d},{1:d},{2:d})".format(
@@ -26,12 +28,16 @@ def generate_stylexml(zoomlevel_list):
         max_scale = ET.Element("MaxScaleDenominator")
         max_scale.text = str(max_v)
 
+        min_scale = ET.Element("MinScaleDenominator")
+        min_scale.text = str(min_v)
+
 
         style = ET.Element("Style",{"name":"style-{}".format(zoom_level)})
         rule = ET.Element("Rule")
         rule.append(line_sym)
 
         rule.append(max_scale)
+        rule.append(min_scale)
 
         style.append(rule)
         main_map.append(style)
