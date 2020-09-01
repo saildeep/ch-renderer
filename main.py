@@ -8,23 +8,27 @@ from chparser import parse_file
 num_zoom_levels = 20
 
 def generate_stylexml(zoomlevel_list):
-    main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat+datum=WGS84"})
+    main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat +datum=WGS84"})
     for zoom_level in zoomlevel_list:
         scale = int(559082264 / 2**zoom_level)
         min_v = 0
         max_v = scale
 
         line_sym = ET.Element("LineSymbolizer",{"stroke":"green","stroke-width":"4"})
+        """
         min_scale = ET.Element("MinScaleDenominator")
         max_scale = ET.Element("MaxScaleDenominator")
         min_scale.text = str(min_v)
         max_scale.text = str(max_v)
+        """
 
         style = ET.Element("Style",{"name":"style-{}".format(zoom_level)})
         rule = ET.Element("Rule")
         rule.append(line_sym)
-        rule.append(min_scale)
+        """
+          rule.append(min_scale)
         rule.append(max_scale)
+        """
         style.append(rule)
         main_map.append(style)
 
