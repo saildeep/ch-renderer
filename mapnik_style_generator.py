@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
 class MapnikStyle:
-    def __init__(self,max_level = 20):
+    def __init__(self,max_level = 19):
         self.main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat +datum=WGS84"})
 
         self.max_level = max_level
