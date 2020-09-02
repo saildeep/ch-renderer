@@ -46,7 +46,9 @@ for (from_zoomlevel,to_zoomlevel),edge_collection in data.items():
 
                     "geometry":{
                         "type":"LineString",
-                        "coordinates":[ch.get_vertex(edge.src_id).mapnik_coordinate,ch.get_vertex(edge.target_id).mapnik_coordinate]
+                        "coordinates":[
+                            ch.get_vertex(edge.src_id).mapnik_coordinate,
+                            ch.get_vertex(edge.target_id).mapnik_coordinate]
                     }
 
 
