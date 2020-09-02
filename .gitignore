@@ -1,5 +1,5 @@
 .idea/
 mapnik.xml
-ch.txt
+ch.ftxt
 *.geojson
 __pycache__/
