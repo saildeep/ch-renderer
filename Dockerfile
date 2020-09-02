@@ -7,7 +7,8 @@ RUN mkdir -p /src \
  && apt-get update \
  && apt-get install -y python3 python3-pip git-lfs curl git ssh wget \
  && apt-get clean \
- && wget -O /src/ch.ftxt https://github.com/saildeep/ch-renderer/blob/master/${FILE}.ftxt?raw=true \
+ && wget -O /src/ch.ftxt https://github.com/saildeep/ch-renderer/blob/master/${FILE}.ftxt?raw=true
+ 
 COPY . /src/
 RUN cd /src \
  && rm *.ftxt \
