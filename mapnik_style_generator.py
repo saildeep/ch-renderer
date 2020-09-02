@@ -66,7 +66,7 @@ class MapnikStyle:
         layer.append(ds)
         self.main_map.append(layer)
 
-        with open(filename,'w',buffering=100000) as f:
+        with open(filename,'w',buffering=10**7) as f:
             print("Writing {}".format(filename))
             json.dump(geojson_content,f,check_circular=False)
 

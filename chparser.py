@@ -76,9 +76,10 @@ class CH:
         return self.edges[id]
 
 def parse_file(filepath):
-    with open(filepath,buffering=100000) as file:
-        num_vertices = int(file.readline(1000000))
-        num_edges = int(file.readline(100000))
+    with open(filepath,buffering=10**8) as file:
+        print("Loading "+ filepath)
+        num_vertices = int(file.readline(1000))
+        num_edges = int(file.readline(1000))
 
         vertices = []
         print("Starting parsing {0} vertices and {1} edges".format(num_vertices,num_edges))
