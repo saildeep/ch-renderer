@@ -12,7 +12,6 @@ RUN mkdir -p /src \
 COPY . /src/
 RUN cd /src \
  && mv /ch.ftxt /src/ch.ftxt \
- && rm *.ftxt \
  && pip3 install -r requirements.txt \
  && python3 main.py \
  && cp mapnik.xml /home/renderer/src/openstreetmap-carto/mapnik.xml \

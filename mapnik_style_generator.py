@@ -69,7 +69,7 @@ class MapnikStyle:
         with open(filename,'w',buffering=100000) as f:
             print("Writing {}".format(filename))
             json.dump(geojson_content,f,check_circular=False)
-            
+
 
     @property
     def xml(self):
