@@ -1,21 +1,17 @@
 
 import pickle
 import os
+import hashlib
+
 
 from chparser import parse_file
 from mapnik_style_generator import MapnikStyle
 
 print("Started main.py")
 mss = MapnikStyle()
-cache_file = "./cached_graph.pckl"
-if os.path.exists(cache_file):
-    with open(cache_file,'rb') as f:
-        ch = pickle.load(f)
-else:
-    ch = parse_file('./ch.ftxt')
-    with open(cache_file,'wb') as f:
-        pickle.dump(ch,f)
-print("Finished parsing CH")
+file = os.environ.get('FILENAME','./ch.ftxt')
+
+ch = parse_file(file)
 
 data ={}
 level_to_zoomlevel = lambda x:(mss.max_level-x)
@@ -48,10 +44,10 @@ print("Finished categorizing vertices")
 
 used_zoom_levels = []
 for (from_zoomlevel,to_zoomlevel),edge_collection in data.items():
-    pass
-    #lines = ch.make_edge_list(edge_collection)
-    #mss.add_layers(lines,from_zoomlevel,to_zoomlevel)
-mss.add_unbound_layer(ch.make_edge_list(filter(lambda x:x.level==0,ch.edges)))
+
+    lines = ch.make_edge_list(edge_collection)
+    mss.add_layers(lines,from_zoomlevel,to_zoomlevel)
+#mss.add_unbound_layer(ch.make_edge_list(filter(lambda x:x.level==0,ch.edges)))
 
 
 
