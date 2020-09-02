@@ -13,6 +13,7 @@ class MapnikStyle:
 
         self.max_level = max_level
 
+        self.__open_file_handlers = []
 
     def level_to_scale(self,zoomlevel):
         osm_factor = (20026376.39 / 180.0)  # due to strange coordinate system
@@ -66,10 +67,10 @@ class MapnikStyle:
 
         }
 
-        with open(filename, 'w', buffering=10 ** 7, encoding='utf-8') as f:
-            print("Writing {}".format(filename))
-            json.dump(out_data, f, check_circular=False, indent=4)
-
+        handler =  open(filename, 'w', buffering=10 ** 8, encoding='utf-8')
+        print("Writing {}".format(filename))
+        json.dump(out_data, handler, check_circular=False, indent=4)
+        self.__open_file_handlers.append(handler)
 
 
     def add_unbound_layer(self,edges):
@@ -98,30 +99,23 @@ class MapnikStyle:
         filename =  "data-{}-to-{}.geojson".format(from_level,to_level)
 
         ratio =  float(to_level) / float(self.max_level)
-        color = "rgb({0:d},{1:d},{2:d})".format(
-            int(ratio * 255.0), 0, int(255.0 * (1.0 - ratio)))
+        color = "rgb({0:d},{1:d},{2:d})".format(int(ratio * 255.0), 0, int(255.0 * (1.0 - ratio)))
+
 
         style = ET.Element("Style", {"name": stylename})
-        for zoom_level in range(from_level,to_level):
-            max_v = self.level_to_scale(zoom_level)
-            min_v = self.level_to_scale(zoom_level+1)
-            target_level_difference = (to_level - zoom_level) -1 # how many layers we are away from the best fitting layer
-            stroke_width = max(1,5-target_level_difference)
+        rule = ET.Element("Rule")
+        max_scale = ET.Element("MaxScaleDenominator")
+        max_scale.text = str(math.floor(self.level_to_scale(from_level)))
+        min_scale = ET.Element("MinScaleDenominator")
+        min_scale.text = str(math.ceil(self.level_to_scale(to_level)))
+        line_sym = ET.Element("LineSymbolizer", {"stroke": color, "stroke-width": str(5)})
+        rule.append(max_scale)
+        if to_level < self.max_level:
+            rule.append(min_scale)
+        rule.append(line_sym)
 
-            line_sym = ET.Element("LineSymbolizer", {"stroke": color, "stroke-width": str(stroke_width)})
-            max_scale = ET.Element("MaxScaleDenominator")
-            max_scale.text = str(math.floor(max_v))
-            min_scale = ET.Element("MinScaleDenominator")
-            min_scale.text = str(math.ceil(min_v))
+        style.append(rule)
 
-
-            rule = ET.Element("Rule")
-            rule.append(line_sym)
-            rule.append(max_scale)
-            if zoom_level+1 < self.max_level:
-                rule.append(min_scale)
-
-            style.append(rule)
         self.main_map.append(style)
 
 
@@ -143,3 +137,6 @@ class MapnikStyle:
         with open('mapnik.xml','w') as f:
             f.write(self.xml)
             f.flush()
+        for h in self.__open_file_handlers:
+            h.close()
+        self.__open_file_handlers = []
