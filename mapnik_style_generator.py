@@ -26,8 +26,8 @@ class MapnikStyle:
         file = ET.Element("Parameter", {"name": "file"})
         file.text = "./" + filename
 
-        cache_features = ET.Element("Parameter",{"name":"cache_features"})
-        cache_features.text = "true" if cache_features else "false"
+        cache_features_element = ET.Element("Parameter",{"name":"cache_features"})
+        cache_features_element.text = "true" if cache_features else "false"
 
         encoding_element = ET.Element("Parameter",{"name":"encoding"})
         encoding_element.text = encoding
@@ -35,7 +35,7 @@ class MapnikStyle:
 
         ds.append(ds_type)
         ds.append(file)
-        ds.append(cache_features)
+        ds.append(cache_features_element)
         ds.append(encoding_element)
 
         layer.append(style_name)
