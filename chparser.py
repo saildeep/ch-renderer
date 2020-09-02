@@ -77,7 +77,7 @@ class CH:
 
 def parse_file(filepath):
     print("Starting parsing " + filepath)
-    with open(filepath,buffering=10000) as file:
+    with open(filepath,'r',buffering=1000000) as file:
         print("Loading "+ filepath)
         num_vertices = int(file.readline(1000))
         num_edges = int(file.readline(1000))
