@@ -29,14 +29,14 @@ class MapnikStyle:
         cache_features = ET.Element("Parameter",{"name":"cache_features"})
         cache_features.text = "true" if cache_features else "false"
 
-        encoding = ET.Element("Parameter",{"name":"encoding"})
-        encoding.text = encoding
+        encoding_element = ET.Element("Parameter",{"name":"encoding"})
+        encoding_element.text = encoding
 
 
         ds.append(ds_type)
         ds.append(file)
         ds.append(cache_features)
-        ds.append(encoding)
+        ds.append(encoding_element)
 
         layer.append(style_name)
         layer.append(ds)
