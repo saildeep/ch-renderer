@@ -4,7 +4,7 @@ from xml.dom import minidom
 import math
 
 class MapnikStyle:
-    def __init__(self,max_level = 19):
+    def __init__(self,max_level = 18):
         self.main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat +datum=WGS84"})
 
         self.max_level = max_level
