@@ -40,6 +40,7 @@ class CH:
         self.edges = edges
         self.max_level = 0
         self.__compute_edge_levels()
+        print("Max level at ch {}".format(self.max_level))
 
 
     def __compute_edge_levels(self):
@@ -96,6 +97,7 @@ def parse_file(filepath):
 
             vertices.append(vertex)
         edges = []
+
         print("Parsed vertices")
         for i in range(num_edges):
             vedge = file.readline(400)
