@@ -16,7 +16,7 @@ class MapnikStyle:
 
     def level_to_scale(self,zoomlevel):
         osm_factor = (20026376.39 / 180.0)  # due to strange coordinate system
-        return osm_factor * float(559082264 / 2 ** zoomlevel) * .9 # multiply to have no splitting line
+        return osm_factor * float(559082264 / 2 ** zoomlevel) 
 
 
     def declareGEOJsonSource(self,filename,stylename,layername,cache_features=True,encoding='utf-8'):
