@@ -18,7 +18,7 @@ else:
 print("Finished parsing CH")
 
 data ={}
-level_to_zoomlevel = lambda x:(mss.max_level-x)-1
+level_to_zoomlevel = lambda x:(mss.max_level-x)
 for e in ch.edges:
     replaced_by = ch.get_edge(e.replaced_by)
     this_level = e.level
