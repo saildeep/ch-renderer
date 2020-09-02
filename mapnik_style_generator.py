@@ -12,7 +12,7 @@ class MapnikStyle:
 
     def level_to_scale(self,zoomlevel):
         osm_factor = (20026376.39 / 180.0)  # due to strange coordinate system
-        return osm_factor * float(559082264 / 2 ** zoomlevel)
+        return osm_factor * float(559082264 / 2 ** zoomlevel) * 1.3 # multiply to have no splitting line
 
     def add_layer(self,geojson_content,from_level:int,to_level:int):
         assert from_level >= 0
