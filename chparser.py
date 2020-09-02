@@ -66,12 +66,12 @@ class CH:
 
 
     def get_vertex(self,id):
-        if id < 0 or id >= len(self.vertices)-1:
+        if id < 0 :
             return None
         return self.vertices[id]
 
     def get_edge(self,id):
-        if id < 0 or id >= len(self.edges)-1:
+        if id < 0 :
             return None
         return self.edges[id]
 
