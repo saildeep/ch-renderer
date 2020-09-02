@@ -52,20 +52,20 @@ for (from_zoomlevel,to_zoomlevel),edge_collection in data.items():
 
     out_data = {
             "type":"FeatureCollection",
-            "features":list(map(lambda edge:
+            "features":[
                 {
                     "type":"Feature",
 
                     "geometry":{
-                        "type":"LineString",
-                        "coordinates":[
+                        "type":"MultiLineString",
+                        "coordinates":list(map(lambda edge:[
                             ch.get_vertex(edge.src_id).mapnik_coordinate,
-                            ch.get_vertex(edge.target_id).mapnik_coordinate]
+                            ch.get_vertex(edge.target_id).mapnik_coordinate],edge_collection))
                     }
 
 
-                 }
-            ,edge_collection))
+                 }]
+
         }
     mss.add_layer(out_data,from_zoomlevel,to_zoomlevel)
 
