@@ -53,23 +53,23 @@ class MapnikStyle:
     def write_json(self,lines,filename):
         out_data = {
             "type": "FeatureCollection",
-            "features": [
+            "features": list(map(lambda line:
                 {
                     "type": "Feature",
 
                     "geometry": {
-                        "type": "MultiLineString",
-                        "coordinates": lines
+                        "type": "LineString",
+                        "coordinates": line
                     },
 
 
-                }]
+                },lines))
 
         }
 
         handler =  open(filename, 'w', buffering=10 ** 8, encoding='utf-8')
         print("Writing {}".format(filename))
-        json.dump(out_data, handler, check_circular=False, indent=4)
+        json.dump(out_data, handler, check_circular=False, indent="\t")
         self.__open_file_handlers.append(handler)
 
 
