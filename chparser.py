@@ -75,6 +75,11 @@ class CH:
             return None
         return self.edges[id]
 
+    def make_edge_list(self,edge_collection):
+        return list(map(lambda edge: [
+            self.get_vertex(edge.src_id).mapnik_coordinate,
+            self.get_vertex(edge.target_id).mapnik_coordinate], edge_collection))
+
 def parse_file(filepath):
     print("Starting parsing " + filepath)
     with open(filepath,'r',buffering=1000000) as file:

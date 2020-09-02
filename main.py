@@ -49,12 +49,10 @@ print("Finished categorizing vertices")
 used_zoom_levels = []
 for (from_zoomlevel,to_zoomlevel),edge_collection in data.items():
 
-    lines = list(map(lambda edge:[
-                            ch.get_vertex(edge.src_id).mapnik_coordinate,
-                            ch.get_vertex(edge.target_id).mapnik_coordinate],edge_collection))
+    lines = ch.make_edge_list(edge_collection)
 
 
-    mss.add_layer(lines,from_zoomlevel,to_zoomlevel)
+    mss.add_layers(lines,from_zoomlevel,to_zoomlevel)
 
 
 mss.write()

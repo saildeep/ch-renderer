@@ -1,7 +1,11 @@
 import json
 import xml.etree.ElementTree as ET
+from typing import List
 from xml.dom import minidom
 import math
+
+from chparser import Edge, CH
+
 
 class MapnikStyle:
     def __init__(self,max_level = 18):
@@ -43,7 +47,38 @@ class MapnikStyle:
 
         self.main_map.append(layer)
 
-    def add_layer(self,lines,from_level:int,to_level:int):
+
+
+    def write_json(self,lines,filename):
+        out_data = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+
+                    "geometry": {
+                        "type": "MultiLineString",
+                        "coordinates": lines
+                    },
+
+
+                }]
+
+        }
+
+        with open(filename, 'w', buffering=10 ** 7, encoding='utf-8') as f:
+            print("Writing {}".format(filename))
+            json.dump(out_data, f, check_circular=False, indent=4)
+
+
+
+    def add_unbound_layer(self,edges):
+        layername = "layer-unbound"
+        stylename ="style-unbound"
+
+
+
+    def add_layers(self,lines,from_level:int,to_level:int):
         assert from_level >= 0
         assert to_level >= 0
         assert to_level>from_level
@@ -82,29 +117,10 @@ class MapnikStyle:
 
         self.declareGEOJsonSource(filename,stylename,layername)
 
-        out_data = {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-
-                    "geometry": {
-                        "type": "MultiLineString",
-                        "coordinates":lines
-                    },
-                    "properties":{
-                        "style":stylename,
-                        "layer":layername
-                    }
-
-                }]
-
-        }
 
 
-        with open(filename,'w',buffering=10**7,encoding='utf-8') as f:
-            print("Writing {}".format(filename))
-            json.dump(out_data,f,check_circular=False,indent=4)
+        self.write_json(lines,filename)
+
 
 
     @property
