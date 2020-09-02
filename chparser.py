@@ -76,7 +76,7 @@ class CH:
         return self.edges[id]
 
 def parse_file(filepath):
-    with open(filepath) as file:
+    with open(filepath,buffering=100000) as file:
         num_vertices = int(file.readline(1000000))
         num_edges = int(file.readline(100000))
 
