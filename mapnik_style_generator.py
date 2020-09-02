@@ -12,12 +12,12 @@ class MapnikStyle:
 
     def level_to_scale(self,zoomlevel):
         osm_factor = (20026376.39 / 180.0)  # due to strange coordinate system
-        return osm_factor * float(559082264 / 2 ** zoomlevel) * 1.3 # multiply to have no splitting line
+        return osm_factor * float(559082264 / 2 ** zoomlevel) * .9 # multiply to have no splitting line
 
     def add_layer(self,geojson_content,from_level:int,to_level:int):
         assert from_level >= 0
         assert to_level >= 0
-        assert  to_level>from_level
+        assert to_level>from_level
 
         layername = "layer-{}-to-{}".format(from_level,to_level)
         stylename = "style-{}-to-{}".format(from_level,to_level)
@@ -36,9 +36,9 @@ class MapnikStyle:
 
             line_sym = ET.Element("LineSymbolizer", {"stroke": color, "stroke-width": str(stroke_width)})
             max_scale = ET.Element("MaxScaleDenominator")
-            max_scale.text = str(max_v)
+            max_scale.text = str(math.floor(max_v))
             min_scale = ET.Element("MinScaleDenominator")
-            min_scale.text = str(min_v)
+            min_scale.text = str(math.ceil(min_v))
 
 
             rule = ET.Element("Rule")
