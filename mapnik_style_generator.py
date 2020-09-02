@@ -1,6 +1,7 @@
 import json
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+import math
 
 class MapnikStyle:
     def __init__(self,max_level = 19):
@@ -22,16 +23,16 @@ class MapnikStyle:
         stylename = "style-{}-to-{}".format(from_level,to_level)
         filename =  "data-{}-to-{}.geojson".format(from_level,to_level)
 
-        ratio = float(from_level) / float(self.max_level)
+        ratio = math.sqrt( float(to_level) / float(self.max_level))
         color = "rgb({0:d},{1:d},{2:d})".format(
-            int(ratio * 255.0), int(127 + 120.0 * ratio), int(255.0 * (1.0 - ratio)))
+            int(ratio * 255.0), 0, int(255.0 * (1.0 - ratio)))
 
         style = ET.Element("Style", {"name": stylename})
         for zoom_level in range(from_level,to_level):
             max_v = self.level_to_scale(zoom_level)
             min_v = self.level_to_scale(zoom_level+1)
             target_level_difference = (to_level - zoom_level) -1 # how many layers we are away from the best fitting layer
-            stroke_width = max(1,8- 2*target_level_difference)
+            stroke_width = max(1,5-target_level_difference)
 
             line_sym = ET.Element("LineSymbolizer", {"stroke": color, "stroke-width": str(stroke_width)})
             max_scale = ET.Element("MaxScaleDenominator")
@@ -43,7 +44,7 @@ class MapnikStyle:
             rule = ET.Element("Rule")
             rule.append(line_sym)
             rule.append(max_scale)
-            if zoom_level < self.max_level:
+            if zoom_level+1 < self.max_level:
                 rule.append(min_scale)
 
             style.append(rule)
