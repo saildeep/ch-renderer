@@ -7,8 +7,8 @@ RUN mkdir -p /src \
  && apt-get update \
  && apt-get install -y python3 python3-pip git-lfs curl git ssh wget \
  && apt-get clean \
- && wget -O /ch.ftxt https://github.com/saildeep/ch-renderer/blob/master/${FILE}.ftxt?raw=true
-
+ && wget -O /ch.ftxt https://github.com/saildeep/ch-renderer/blob/master/${FILE}.ftxt?raw=true \
+ && pip3 install pyproj==2.6.1
 COPY . /src/
 RUN cd /src \
  && mv /ch.ftxt /src/ch.ftxt \
