@@ -7,7 +7,7 @@ from mapnik_style_generator import MapnikStyle
 
 
 mss = MapnikStyle()
-cache_file = "cached_graph.pckl"
+cache_file = "./cached_graph.pckl"
 if os.path.exists(cache_file):
     with open(cache_file,'rb') as f:
         ch = pickle.load(f)
