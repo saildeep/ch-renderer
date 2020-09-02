@@ -29,8 +29,11 @@ for e in ch.edges:
     from_zoomlevel = level_to_zoomlevel(next_level)
     to_zoomlevel = level_to_zoomlevel(this_level)
 
-    if from_zoomlevel < 0 or to_zoomlevel<0:
+    if to_zoomlevel <1:
         continue
+
+    if from_zoomlevel < 0:
+        from_zoomlevel = 0
 
     assert to_zoomlevel>from_zoomlevel
 
