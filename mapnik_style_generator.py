@@ -19,7 +19,7 @@ class MapnikStyle:
         return osm_factor * float(559082264 / 2 ** zoomlevel) * .9 # multiply to have no splitting line
 
 
-    def declareGEOJsonSource(self,filename,stylename,layername,cache_features=False,encoding='utf-8'):
+    def declareGEOJsonSource(self,filename,stylename,layername,cache_features=True,encoding='utf-8'):
         layer = ET.Element("Layer", {"name": layername})
 
         style_name = ET.Element("StyleName")
@@ -75,6 +75,16 @@ class MapnikStyle:
     def add_unbound_layer(self,edges):
         layername = "layer-unbound"
         stylename ="style-unbound"
+        filename ="data.geojson"
+
+        self.declareGEOJsonSource(filename,stylename,layername)
+        self.write_json(edges,filename)
+        style = ET.Element("Style",{"name":stylename})
+        rule =ET.Element("Rule")
+        line_sym = ET.Element("LineSymbolizer", {"stroke": "black", "stroke-width": str(3)})
+        rule.append(line_sym)
+        style.append(rule)
+        self.main_map.append(style)
 
 
 
