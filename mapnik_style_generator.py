@@ -43,12 +43,12 @@ class MapnikStyle:
         layer = ET.Element("Layer", {"name": layername})
 
         style_name = ET.Element("StyleName")
-        style_name.text = style_name
+        style_name.text = stylename
         ds = ET.Element("Datasource")
         ds_type = ET.Element("Parameter", {"name": "type"})
         ds_type.text = "geojson"
         file = ET.Element("Parameter", {"name": "file"})
-        file.text = filename
+        file.text = "./" + filename
 
         ds.append(ds_type)
         ds.append(file)

@@ -1,11 +1,20 @@
 import json
+import pickle
+import os
 
 from chparser import parse_file
 from mapnik_style_generator import MapnikStyle
 
 
 mss = MapnikStyle()
-ch = parse_file('./ch.ftxt')
+cache_file = "cached_graph.pckl"
+if os.path.exists(cache_file):
+    with open(cache_file,'rb') as f:
+        ch = pickle.load(f)
+else:
+    ch = parse_file('./ch.ftxt')
+    with open(cache_file,'wb') as f:
+        pickle.dump(ch,f)
 print("Finished parsing CH")
 
 data ={}

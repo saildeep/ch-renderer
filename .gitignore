@@ -3,3 +3,4 @@ mapnik.xml
 ch.ftxt
 *.geojson
 __pycache__/
+*.pckl
