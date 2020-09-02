@@ -14,7 +14,36 @@ class MapnikStyle:
         osm_factor = (20026376.39 / 180.0)  # due to strange coordinate system
         return osm_factor * float(559082264 / 2 ** zoomlevel) * .9 # multiply to have no splitting line
 
-    def add_layer(self,geojson_content,from_level:int,to_level:int):
+
+    def declareGEOJsonSource(self,filename,stylename,layername,cache_features=False,encoding='utf-8'):
+        layer = ET.Element("Layer", {"name": layername})
+
+        style_name = ET.Element("StyleName")
+        style_name.text = stylename
+        ds = ET.Element("Datasource")
+        ds_type = ET.Element("Parameter", {"name": "type"})
+        ds_type.text = "geojson"
+        file = ET.Element("Parameter", {"name": "file"})
+        file.text = "./" + filename
+
+        cache_features = ET.Element("Parameter",{"name":"cache_features"})
+        cache_features.text = "true" if cache_features else "false"
+
+        encoding = ET.Element("Parameter",{"name":"encoding"})
+        encoding.text = encoding
+
+
+        ds.append(ds_type)
+        ds.append(file)
+        ds.append(cache_features)
+        ds.append(encoding)
+
+        layer.append(style_name)
+        layer.append(ds)
+
+        self.main_map.append(layer)
+
+    def add_layer(self,lines,from_level:int,to_level:int):
         assert from_level >= 0
         assert to_level >= 0
         assert to_level>from_level
@@ -50,26 +79,32 @@ class MapnikStyle:
             style.append(rule)
         self.main_map.append(style)
 
-        layer = ET.Element("Layer", {"name": layername})
 
-        style_name = ET.Element("StyleName")
-        style_name.text = stylename
-        ds = ET.Element("Datasource")
-        ds_type = ET.Element("Parameter", {"name": "type"})
-        ds_type.text = "geojson"
-        file = ET.Element("Parameter", {"name": "file"})
-        file.text = "./" + filename
+        self.declareGEOJsonSource(filename,stylename,layername)
 
-        ds.append(ds_type)
-        ds.append(file)
+        out_data = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
 
-        layer.append(style_name)
-        layer.append(ds)
-        self.main_map.append(layer)
+                    "geometry": {
+                        "type": "MultiLineString",
+                        "coordinates":lines
+                    },
+                    "properties":{
+                        "style":stylename,
+                        "layer":layername
+                    }
 
-        with open(filename,'w',buffering=10**7) as f:
+                }]
+
+        }
+
+
+        with open(filename,'w',buffering=10**7,encoding='utf-8') as f:
             print("Writing {}".format(filename))
-            json.dump(geojson_content,f,check_circular=False)
+            json.dump(out_data,f,check_circular=False,indent=4)
 
 
     @property
