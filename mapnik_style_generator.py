@@ -9,13 +9,15 @@ class MapnikStyle:
         self.max_level = max_level
 
 
+    def level_to_scale(self,zoomlevel):
+        osm_factor = (20026376.39 / 180.0)  # due to strange coordinate system
+        return osm_factor * float(559082264 / 2 ** zoomlevel)
+
     def add_layer(self,geojson_content,from_level:int,to_level:int):
         assert from_level >= 0
         assert to_level >= 0
         assert  to_level>from_level
-        osm_factor = (20026376.39 / 180.0)  # due to strange coordinate system
-        max_v = osm_factor * float(559082264 / 2 ** from_level)
-        min_v = osm_factor * float(559082264 / 2 ** to_level)
+
         layername = "layer-{}-to-{}".format(from_level,to_level)
         stylename = "style-{}-to-{}".format(from_level,to_level)
         filename =  "data-{}-to-{}.geojson".format(from_level,to_level)
@@ -24,20 +26,27 @@ class MapnikStyle:
         color = "rgb({0:d},{1:d},{2:d})".format(
             int(ratio * 255.0), int(127 + 120.0 * ratio), int(255.0 * (1.0 - ratio)))
 
-        line_sym = ET.Element("LineSymbolizer", {"stroke": color, "stroke-width": "4"})
-        max_scale = ET.Element("MaxScaleDenominator")
-        max_scale.text = str(max_v)
-        min_scale = ET.Element("MinScaleDenominator")
-        min_scale.text = str(min_v)
+        style = ET.Element("Style", {"name": stylename})
+        for zoom_level in range(from_level,to_level):
+            max_v = self.level_to_scale(zoom_level)
+            min_v = self.level_to_scale(zoom_level+1)
+            target_level_difference = (to_level - zoom_level) -1 # how many layers we are away from the best fitting layer
+            stroke_width = max(1,8- 2*target_level_difference)
 
-        style = ET.Element("Style", {"name":stylename})
-        rule = ET.Element("Rule")
-        rule.append(line_sym)
-        rule.append(max_scale)
-        if to_level < self.max_level:
-            rule.append(min_scale)
+            line_sym = ET.Element("LineSymbolizer", {"stroke": color, "stroke-width": str(stroke_width)})
+            max_scale = ET.Element("MaxScaleDenominator")
+            max_scale.text = str(max_v)
+            min_scale = ET.Element("MinScaleDenominator")
+            min_scale.text = str(min_v)
 
-        style.append(rule)
+
+            rule = ET.Element("Rule")
+            rule.append(line_sym)
+            rule.append(max_scale)
+            if zoom_level < self.max_level:
+                rule.append(min_scale)
+
+            style.append(rule)
         self.main_map.append(style)
 
         layer = ET.Element("Layer", {"name": layername})
