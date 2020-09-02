@@ -23,7 +23,7 @@ class MapnikStyle:
         stylename = "style-{}-to-{}".format(from_level,to_level)
         filename =  "data-{}-to-{}.geojson".format(from_level,to_level)
 
-        ratio = math.sqrt( float(to_level) / float(self.max_level))
+        ratio =  float(to_level) / float(self.max_level)
         color = "rgb({0:d},{1:d},{2:d})".format(
             int(ratio * 255.0), 0, int(255.0 * (1.0 - ratio)))
 
