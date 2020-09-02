@@ -1,11 +1,11 @@
-import json
+
 import pickle
 import os
 
 from chparser import parse_file
 from mapnik_style_generator import MapnikStyle
 
-
+print("Started main.py")
 mss = MapnikStyle()
 cache_file = "./cached_graph.pckl"
 if os.path.exists(cache_file):
