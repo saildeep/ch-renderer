@@ -12,7 +12,7 @@ COPY ./requirements.txt /src/requirements.txt
 RUN cd /src && pip3 install -r requirements.txt && rm requirements.txt
 COPY . /src/
 RUN cd /src \
- && python3 -u main.py \
+ && python3 -O -u main.py \
  && cp mapnik.xml /home/renderer/src/openstreetmap-carto/mapnik.xml \
  && cp *.geojson /home/renderer/src/openstreetmap-carto/ \
  && rm *.geojson \
