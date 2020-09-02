@@ -8,11 +8,11 @@ RUN mkdir -p /src \
  && apt-get install -y python3 python3-pip git-lfs curl git ssh wget \
  && apt-get clean \
  && wget -O /ch.ftxt https://github.com/saildeep/ch-renderer/blob/master/${FILE}.ftxt?raw=true \
- && pip3 install pyproj==2.6.1
+COPY ./requirements.txt /src/requirements.txt
+RUN cd /src && pip3 install -r requirements.txt && rm requirements.txt
 COPY . /src/
 RUN cd /src \
  && mv /ch.ftxt /src/ch.ftxt \
- && pip3 install -r requirements.txt \
  && python3 main.py \
  && cp mapnik.xml /home/renderer/src/openstreetmap-carto/mapnik.xml \
  && cp *.geojson /home/renderer/src/openstreetmap-carto/ \
