@@ -28,6 +28,7 @@ class Edge(object):
         self.skip2 = skip2
         self.replaced_by = -1
         self.level = -1
+        self.normalized_level = -1
 
 
     def __str__(self):
@@ -63,6 +64,11 @@ class CH:
                     continue
                 new_open_list.append(ie)
             open_list = new_open_list
+
+        f_max_level = float(self.max_level)
+        for edge in self.edges:
+            edge.normalized_level = float(edge.level )/ f_max_level
+
 
 
 
