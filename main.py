@@ -47,7 +47,7 @@ for i in range(num_levels):
     from_zoomlevel = 17-i
     to_zoomlevel = 18-i
     if i == 0:
-        to_zoomlevel = 100
+        to_zoomlevel = mss.max_level
     if i == num_levels -1:
         from_zoomlevel = 0
 
