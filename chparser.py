@@ -89,6 +89,7 @@ class CH:
         hier = list(map(lambda x:[],range(num_levels)))
 
 
+        skip_counter = 0
         for e in self.edges:
             # in case of most bottom part
             if e.skip1 == -1:
@@ -97,11 +98,21 @@ class CH:
                 continue
 
             edge_level = get_level(e)
-            child1_level = get_level(self.edges[e.skip1])
-            child2_level = get_level(self.edges[e.skip2])
+            child1 = self.edges[e.skip1]
+            child2 = self.edges[e.skip2]
+
+            child1_level = get_level(child1)
+            child2_level = get_level(child2)
             if child1_level< edge_level and child2_level < edge_level:
                 hier[edge_level].append(e)
 
+            # somewhat experimental skip prevention
+            for child,child_level in [(child1,child1_level),(child2,child2_level)]:
+                for add_to_level in range(child_level +1, edge_level):
+                    hier[add_to_level].append(child)
+                    skip_counter = skip_counter+1
+
+        print("Created {} skip connection".format(skip_counter))
         return hier
 
 
