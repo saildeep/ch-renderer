@@ -109,9 +109,12 @@ class MapnikStyle:
         min_scale = ET.Element("MinScaleDenominator")
         min_scale.text = str(math.ceil(self.level_to_scale(to_level)))
         line_sym = ET.Element("LineSymbolizer", {"stroke": color, "stroke-width": str(5)})
-        rule.append(max_scale)
+
         if to_level < self.max_level:
             rule.append(min_scale)
+
+        if from_level > 0:
+            rule.append(max_scale)
         rule.append(line_sym)
 
         style.append(rule)
