@@ -2,6 +2,7 @@
 from typing import List
 
  #do this as mapnik expects to coordinates in epsg 3857 form some weird reason
+import math
 from pyproj import Proj, Transformer
 
 wgs84 = Proj('epsg:4326')
@@ -81,6 +82,33 @@ class CH:
         if id < 0 :
             return None
         return self.edges[id]
+
+    def get_edge_hierarchy(self,num_levels):
+        norm_to_level = lambda x:math.floor(x*(num_levels-1))
+        get_level = lambda x:norm_to_level(x.normalized_level)
+        hier = list(map(lambda x:[],range(num_levels)))
+
+
+        for e in self.edges:
+            # in case of most bottom part
+            if e.skip1 == -1:
+                assert e.skip2 == -1
+                hier[0].append(e)
+                continue
+
+            edge_level = get_level(e)
+            child1_level = get_level(self.edges[e.skip1])
+            child2_level = get_level(self.edges[e.skip2])
+            if child1_level< edge_level and child2_level < edge_level:
+                hier[edge_level].append(e)
+
+        return hier
+
+
+
+
+
+
 
     def make_edge_list(self,edge_collection):
         return list(map(lambda edge: [

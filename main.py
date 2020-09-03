@@ -39,14 +39,27 @@ for e in ch.edges:
     data[key] = edge_collection
 
 
+num_levels = 8
+hierarchy_small = ch.get_edge_hierarchy(num_levels)
+
+for i in range(num_levels):
+    lines = ch.make_edge_list(hierarchy_small[i])
+    from_zoomlevel = 17-i
+    to_zoomlevel = 18-i
+    if i == 0:
+        to_zoomlevel = 100
+    if i == num_levels -1:
+        from_zoomlevel = 0
+
+
+    mss.add_layers(lines,from_zoomlevel,to_zoomlevel)
 
 print("Finished categorizing vertices")
 
-used_zoom_levels = []
 for (from_zoomlevel,to_zoomlevel),edge_collection in data.items():
 
     lines = ch.make_edge_list(edge_collection)
-    mss.add_layers(lines,from_zoomlevel,to_zoomlevel)
+    #mss.add_layers(lines,from_zoomlevel,to_zoomlevel)
 #mss.add_unbound_layer(ch.make_edge_list(filter(lambda x:x.level==0,ch.edges)))
 
 
