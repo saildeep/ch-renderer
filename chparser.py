@@ -104,17 +104,19 @@ class CH:
 
         for l in range(num_levels):
 
-            scale_fn = lambda x:math.log(x+.1)
+            scale_fn = lambda x:math.log(x+.00001,2)
             normed_level = (float(l) / float(num_levels))
             normed_scaled_level = (scale_fn(normed_level) - scale_fn(0))/(scale_fn(1)- scale_fn(0))
+
             th = normed_scaled_level * self.__max_label
+            print("NSL:", normed_scaled_level, "TH:",th)
             edges = hier[l]
             for e in leafes:
 
 
                 v1 = self.get_vertex(e.src_id)
                 v2 = self.get_vertex(e.target_id)
-                if v1.label >= th or v2.label >= th:
+                if v1.label >= th :
                     edges.append(e)
 
 
