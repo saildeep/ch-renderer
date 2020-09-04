@@ -42,6 +42,7 @@ class CH:
         self.edges = edges
         self.max_level = 0
         self.__compute_edge_levels()
+        self.__compute_vertex_labels()
         print("Max level at ch {}".format(self.max_level))
 
 
@@ -71,6 +72,17 @@ class CH:
             edge.normalized_level = float(edge.level )/ f_max_level
 
 
+    def __compute_vertex_labels(self):
+        self.__min_label = 10000000
+        self.__max_label = -10000000
+        labels = []
+        for v in self.vertices:
+            self.__min_label = min(v.label,self.__min_label)
+            self.__max_label= max(v.label,self.__max_label)
+            labels.append(v.label)
+
+
+
 
 
     def get_vertex(self,id):
@@ -82,6 +94,33 @@ class CH:
         if id < 0 :
             return None
         return self.edges[id]
+
+
+    def get_vertex_hierarchy(self,num_levels):
+        # level 0 is all visible
+
+        hier = list(map(lambda x: [], range(num_levels)))
+        leafes = list(filter(lambda x:x.skip1==-1 and x.skip2==-1, self.edges))
+
+        for l in range(num_levels):
+
+            scale_fn = lambda x:math.log(x+.1)
+            normed_level = (float(l) / float(num_levels))
+            normed_scaled_level = (scale_fn(normed_level) - scale_fn(0))/(scale_fn(1)- scale_fn(0))
+            th = normed_scaled_level * self.__max_label
+            edges = hier[l]
+            for e in leafes:
+
+
+                v1 = self.get_vertex(e.src_id)
+                v2 = self.get_vertex(e.target_id)
+                if v1.label >= th or v2.label >= th:
+                    edges.append(e)
+
+
+        return hier
+
+
 
     def get_edge_hierarchy(self,num_levels):
         norm_to_level = lambda x:math.floor(x*(num_levels-1))

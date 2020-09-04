@@ -68,7 +68,7 @@ class MapnikStyle:
         }
 
         handler =  open(filename, 'w', buffering=10 ** 8, encoding='utf-8')
-        print("Writing {}".format(filename))
+        print("Writing {} edges to {}".format(len(lines),filename))
         json.dump(out_data, handler, check_circular=False, indent="\t")
         self.__open_file_handlers.append(handler)
 

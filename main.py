@@ -40,7 +40,7 @@ for e in ch.edges:
 
 
 num_levels = 12
-hierarchy_small = ch.get_edge_hierarchy(num_levels)
+hierarchy_small = ch.get_vertex_hierarchy(num_levels)
 
 for i in range(num_levels):
     lines = ch.make_edge_list(hierarchy_small[i])
