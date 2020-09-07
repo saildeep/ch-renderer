@@ -116,7 +116,7 @@ class CH:
 
                 v1 = self.get_vertex(e.src_id)
                 v2 = self.get_vertex(e.target_id)
-                if v1.label >= th :
+                if v1.label >= th or v2.label >= th:
                     edges.append(e)
 
 
