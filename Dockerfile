@@ -7,10 +7,11 @@ RUN mkdir -p /src \
  && apt-get update \
  && apt-get install -y python3 python3-pip git-lfs curl git ssh wget \
  && apt-get clean \
- && wget -O /src/ch.ftxt https://github.com/saildeep/ch-renderer/blob/master/${FILE}.ftxt?raw=true
+ && wget -O /ch.ftxt https://github.com/saildeep/ch-renderer/blob/master/${FILE}.ftxt?raw=true
 COPY ./requirements.txt /src/requirements.txt
 RUN cd /src && pip3 install -r requirements.txt && rm requirements.txt
 COPY . /src/
+ENV FILENAME=/ch.ftxt
 RUN cd /src \
  && python3 -O -u main.py \
  && cp mapnik.xml /home/renderer/src/openstreetmap-carto/mapnik.xml \
