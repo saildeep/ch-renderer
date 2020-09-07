@@ -122,15 +122,23 @@ class CH:
 
         return hier
 
+    def get_leaf_edges(self,edge:Edge):
+        if edge.skip1 == -1:
+            assert edge.skip2 == -1
+            yield edge
+            return
+        for e in self.get_leaf_edges(self.get_edge(edge.skip1)):
+            yield e
+        for e in self.get_leaf_edges(self.get_edge(edge.skip2)):
+            yield e
 
 
-    def get_edge_hierarchy(self,num_levels):
+    def get_edge_hierarchy(self,num_levels,extend_childs=False):
         norm_to_level = lambda x:math.floor(x*(num_levels-1))
         get_level = lambda x:norm_to_level(x.normalized_level)
         hier = list(map(lambda x:[],range(num_levels)))
 
 
-        skip_counter = 0
         for e in self.edges:
             # in case of most bottom part
             if e.skip1 == -1:
@@ -151,9 +159,23 @@ class CH:
             for child,child_level in [(child1,child1_level),(child2,child2_level)]:
                 for add_to_level in range(child_level +1, edge_level):
                     hier[add_to_level].append(child)
-                    skip_counter = skip_counter+1
 
-        print("Created {} skip connection".format(skip_counter))
+
+
+        if extend_childs:
+            new_hier = list(map(lambda x:[],range(num_levels)))
+            for hier_level_index,hier_level in enumerate(hier):
+                use_edges = {}
+                for e in hier_level:
+                    for leave in self.get_leaf_edges(e):
+                        use_edges[leave.id] = leave
+                new_hier[hier_level_index] = use_edges.values()
+
+            hier = new_hier
+
+
+
+        
         return hier
 
 

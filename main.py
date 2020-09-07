@@ -39,9 +39,9 @@ for e in ch.edges:
     data[key] = edge_collection
 
 
-num_levels = 12
+num_levels = 7
 
-hierarchy_small = ch.get_edge_hierarchy(num_levels)
+hierarchy_small = ch.get_edge_hierarchy(num_levels,extend_childs=True)
 
 for i in range(num_levels):
     lines = ch.make_edge_list(hierarchy_small[i])
