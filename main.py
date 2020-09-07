@@ -39,7 +39,7 @@ for e in ch.edges:
     data[key] = edge_collection
 
 
-num_levels = 12
+num_levels = 7
 
 hierarchy_small = ch.get_edge_hierarchy(num_levels,extend_childs=True)
 
