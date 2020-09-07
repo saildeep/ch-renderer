@@ -40,6 +40,7 @@ for e in ch.edges:
 
 
 num_levels = 12
+"""
 hierarchy_small = ch.get_vertex_hierarchy(num_levels)
 
 for i in range(num_levels):
@@ -55,9 +56,9 @@ for i in range(num_levels):
     #mss.add_layers(lines,from_zoomlevel,to_zoomlevel)
 
 print("Finished categorizing vertices")
+"""
 
 for (from_zoomlevel,to_zoomlevel),edge_collection in data.items():
-
     lines = ch.make_edge_list(edge_collection)
     mss.add_layers(lines,from_zoomlevel,to_zoomlevel)
 #mss.add_unbound_layer(ch.make_edge_list(filter(lambda x:x.level==0,ch.edges)))
