@@ -179,6 +179,32 @@ class CH:
         return hier
 
 
+    def bin_edges_from_hierarchy(self,hier:List[List['Edge']]):
+
+
+        edgeid_to_contained_levels = {}
+
+        for hier_level_index,level_elements in enumerate(hier):
+            for element in level_elements:
+                eid = element.id
+                levels =  edgeid_to_contained_levels.get(eid,[])
+                if hier_level_index not in levels:
+                    levels.append(hier_level_index)
+                edgeid_to_contained_levels[eid] = levels
+
+
+        layers = {}
+        for edge_id,levels in edgeid_to_contained_levels.items():
+            edge = self.get_edge(edge_id)
+            levels_sorted = map(str,sorted(levels))
+            levels_index = '-'.join(levels_sorted)
+            x = layers.get(levels_index,[])
+            x.append(edge)
+            layers[levels_index] = x
+        return layers
+
+
+
 
 
 

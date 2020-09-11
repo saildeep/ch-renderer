@@ -1,6 +1,6 @@
 import json
 import xml.etree.ElementTree as ET
-from typing import List
+from typing import List, Tuple
 from xml.dom import minidom
 import math
 
@@ -19,6 +19,8 @@ class MapnikStyle:
         self.max_level = max_level
 
         self.__open_file_handlers = []
+
+        self._file_index = 0
 
     def level_to_scale(self,zoomlevel):
         osm_factor = (20026376.39 / 180.0)  # due to strange coordinate system
@@ -93,25 +95,25 @@ class MapnikStyle:
         self.main_map.append(style)
 
 
-    def add_layers(self,lines,from_level:int,to_level:int,max_elements = 10000):
+    def add_layers(self,lines,from_level:int,to_level:int,max_elements=10000):
         ratio = float(to_level) / float(self.max_level)
 
         color = "rgb({0:d},{1:d},{2:d})".format(int(ratio * 255.0), 0, int(255.0 * (1.0 - ratio)))
+
+        self.add_layers_with_ranges(lines,[(from_level,to_level)],color,max_elements=max_elements)
+
+
+    def add_layers_with_ranges(self,lines,ranges:List[Tuple[int,int]],color,max_elements = 10000):
+        rules = []
+        for from_level,to_level in ranges:
+            rules.append(self._get_rule(from_level,to_level,color))
+
+
         for i,d in enumerate(divide_chunks(lines,max_elements)):
-            self._add_layers(d,from_level,to_level,i,color)
-
-    def _add_layers(self,lines,from_level:int,to_level:int,index,color):
-        assert from_level >= 0
-        assert to_level >= 0
-        assert to_level>from_level
-
-        layername = "layer-{}-to-{}-{}".format(from_level,to_level,index)
-        stylename = "style-{}-to-{}-{}".format(from_level,to_level,index)
-        filename =  "data-{}-to-{}-{}.geojson".format(from_level,to_level,index)
+            self._add_layers(d,rules)
 
 
-
-        style = ET.Element("Style", {"name": stylename})
+    def _get_rule(self,from_level,to_level,color):
         rule = ET.Element("Rule")
         max_scale = ET.Element("MaxScaleDenominator")
         max_scale.text = str(math.floor(self.level_to_scale(from_level)))
@@ -125,8 +127,23 @@ class MapnikStyle:
         if from_level > 0:
             rule.append(max_scale)
         rule.append(line_sym)
+        return rule
 
-        style.append(rule)
+    def _add_layers(self,lines,rules):
+
+
+
+        index = self._file_index
+        layername = "layer-{}".format(index)
+        stylename = "style-{}".format(index)
+        filename =  "data-{}.geojson".format(index)
+        self._file_index +=1
+
+
+        style = ET.Element("Style", {"name": stylename})
+
+        for rule in rules:
+            style.append(rule)
 
         self.main_map.append(style)
 
