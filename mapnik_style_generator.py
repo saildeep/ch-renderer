@@ -7,6 +7,11 @@ import math
 from chparser import Edge, CH
 
 
+def divide_chunks(l:List, n:int):
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
 class MapnikStyle:
     def __init__(self,max_level = 18):
         self.main_map = ET.Element('Map', {"background-color": "transparent", "srs": "+proj=longlat +datum=WGS84"})
@@ -88,18 +93,22 @@ class MapnikStyle:
         self.main_map.append(style)
 
 
+    def add_layers(self,lines,from_level:int,to_level:int,max_elements = 10000):
+        ratio = float(to_level) / float(self.max_level)
 
-    def add_layers(self,lines,from_level:int,to_level:int):
+        color = "rgb({0:d},{1:d},{2:d})".format(int(ratio * 255.0), 0, int(255.0 * (1.0 - ratio)))
+        for i,d in enumerate(divide_chunks(lines,max_elements)):
+            self._add_layers(d,from_level,to_level,i,color)
+
+    def _add_layers(self,lines,from_level:int,to_level:int,index,color):
         assert from_level >= 0
         assert to_level >= 0
         assert to_level>from_level
 
-        layername = "layer-{}-to-{}".format(from_level,to_level)
-        stylename = "style-{}-to-{}".format(from_level,to_level)
-        filename =  "data-{}-to-{}.geojson".format(from_level,to_level)
+        layername = "layer-{}-to-{}-{}".format(from_level,to_level,index)
+        stylename = "style-{}-to-{}-{}".format(from_level,to_level,index)
+        filename =  "data-{}-to-{}-{}.geojson".format(from_level,to_level,index)
 
-        ratio =  float(to_level) / float(self.max_level)
-        color = "rgb({0:d},{1:d},{2:d})".format(int(ratio * 255.0), 0, int(255.0 * (1.0 - ratio)))
 
 
         style = ET.Element("Style", {"name": stylename})
