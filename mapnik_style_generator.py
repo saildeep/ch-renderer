@@ -103,7 +103,7 @@ class MapnikStyle:
         self.add_layers_with_ranges(lines,[(from_level,to_level)],color,max_elements=max_elements)
 
 
-    def add_layers_with_ranges(self,lines,ranges:List[Tuple[int,int]],color,max_elements = 10000):
+    def add_layers_with_ranges(self,lines,ranges:List[Tuple[int,int]],color,max_elements = 100000):
         rules = []
         for from_level,to_level in ranges:
             rules.append(self._get_rule(from_level,to_level,color))
