@@ -5,7 +5,7 @@ import hashlib
 
 
 from chparser import parse_file
-from mapnik_style_generator import MapnikStyle
+from mapnik_style_generator import MapnikStyle, Colormapper
 
 print("Started main.py")
 mss = MapnikStyle()
@@ -43,15 +43,19 @@ num_levels = 12
 
 hierarchy_small = ch.get_edge_hierarchy(num_levels,extend_childs=True)
 hierarchy_compact = ch.bin_edges_from_hierarchy(hierarchy_small)
+
+max_zoom = 18
+cm = Colormapper(0,num_levels)
 for levels_string,edges in hierarchy_compact.items():
-    levels = map(int,levels_string.split("-"))
+    levels = list(map(int,levels_string.split("-")))
     lines = ch.make_edge_list(edges)
     ranges = list(map(lambda level:
                       (
-                          17-level if level< num_levels-1 else 0 ,
-                          18-level if level > 0 else mss.max_level
+                          (max_zoom-1)-level if level< num_levels-1 else 0 ,
+                          max_zoom-level if level > 0 else mss.max_level
                       ),levels))
-    mss.add_layers_with_ranges(lines,ranges,'red')
+    colors = list(map(lambda x:cm(x),levels))
+    mss.add_layers_with_ranges(lines,ranges,colors)
 
 
 for i in range(num_levels):

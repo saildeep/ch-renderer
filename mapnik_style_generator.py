@@ -1,6 +1,6 @@
 import json
 import xml.etree.ElementTree as ET
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from xml.dom import minidom
 import math
 
@@ -103,10 +103,16 @@ class MapnikStyle:
         self.add_layers_with_ranges(lines,[(from_level,to_level)],color,max_elements=max_elements)
 
 
-    def add_layers_with_ranges(self,lines,ranges:List[Tuple[int,int]],color,max_elements = 100000):
+    def add_layers_with_ranges(self,lines,ranges:List[Tuple[int,int]],color:Union[str,List[str]],max_elements = 100000):
         rules = []
-        for from_level,to_level in ranges:
-            rules.append(self._get_rule(from_level,to_level,color))
+
+        if isinstance(color,str):
+            color = [color] * len(ranges)
+
+        assert len(color) == len(ranges)
+
+        for i,(from_level,to_level) in enumerate(ranges):
+            rules.append(self._get_rule(from_level,to_level,color[i]))
 
 
         for i,d in enumerate(divide_chunks(lines,max_elements)):
@@ -169,3 +175,17 @@ class MapnikStyle:
         for h in self.__open_file_handlers:
             h.close()
         self.__open_file_handlers = []
+
+
+class Colormapper():
+    def __init__(self,minv:float,maxv:float,colmap="viridis"):
+        import matplotlib.pyplot as plt
+        self.cmap = plt.get_cmap(colmap)
+        self.minv = minv
+        self.maxv = maxv
+
+
+    def __call__(self, v):
+        ratio = float(v - self.minv)/float(self.maxv-self.minv)
+        r,g,b,a = self.cmap(ratio)
+        return "rgb({},{},{})".format(int(r*256),int(g*256),int(b*256))
