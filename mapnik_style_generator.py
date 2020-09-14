@@ -27,7 +27,7 @@ class MapnikStyle:
         return osm_factor * float(559082264 / 2 ** zoomlevel)
 
 
-    def declareGEOJsonSource(self,filename,stylename,layername,cache_features=True,encoding='utf-8'):
+    def declareGEOJsonSource(self,filename,stylename,layername,cache_features=False,encoding='utf-8'):
         layer = ET.Element("Layer", {"name": layername})
 
         style_name = ET.Element("StyleName")
